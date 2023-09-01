@@ -5,6 +5,7 @@ const KEYS = {
 };
 
 let game = {
+    running: true,
     ctx: null,
     platform: null,
     ball: null,
@@ -12,7 +13,7 @@ let game = {
     rows: 4,
     cols: 8,
     width: 640,
-    heigth: 360,
+    height: 360,
     sprites: {
         background: null,
         ball: null,
@@ -22,14 +23,14 @@ let game = {
     sounds: {
         bump: null,
     },
-    init: function () {
+    init() {
         this.ctx = document.getElementById("mycanvas").getContext("2d")
         this.setTextFont();
         this.setEvents();
     },
     setTextFont() {
         this.ctx.font = "20px Arial";
-        this.ctx.fillStyle = "#FFFFFFF";
+        this.ctx.fillStyle = "#FFFFFF";
     },
     setEvents() {
         window.addEventListener("keydown", e => {
@@ -69,9 +70,9 @@ let game = {
     },
 
     preloadAudio(onResourceLoad) {
-        for (letkey in this.sprites) {
+        for (let key in this.sounds) {
             this.sounds[key] = new Audio("sounds/" + key + ".mp3");
-            this.sounds[key].addEventListener("canplaythrough", onResourceLoad, { once: true });
+            this.sounds[key].addEventListener("canplaythrough", onResourceLoad, {once: true});
         }
     },
 
@@ -91,8 +92,9 @@ let game = {
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
                 this.blocks.push({
+                    active: true,
                     width: 60,
-                    heigth: 20,
+                    height: 20,
                     x: 64 * col + 65,
                     y: 24 * row + 35
                 });
@@ -127,7 +129,7 @@ let game = {
     },
     collidePlatform() {
         if (this.ball.collide(this.platform)) {
-            this.ball.bumpBlock(this.platform);
+            this.ball.bumpPlatform(this.platform);
             this.sounds.bump.play();
         }
     },
@@ -140,11 +142,11 @@ let game = {
             });
         }
     },
-    render() {
-        this.ctx.clearRect(0, 0, this.width, this.heigth);
+    render() { //
+        this.ctx.clearRect(0, 0, this.width, this.height);
         this.ctx.drawImage(this.sprites.background, 0, 0);
         this.ctx.drawImage(this.sprites.ball, this.ball.frame * this.ball.width, 0,
-            this.ball.width, this.ball.heigth, this.ball.x, this.ball.y, this.ball.width, this.ball.heigth);
+            this.ball.width, this.ball.height, this.ball.x, this.ball.y, this.ball.width, this.ball.height);
         this.ctx.drawImage(this.sprites.platform, this.platform.x, this.platform.y);
         this.renderBlocks();
         this.ctx.fillText("Score: " + this.score, 15, 20);
@@ -182,7 +184,7 @@ game.ball = {
     x: 320,
     y: 280,
     width: 20,
-    heigth: 20,
+    height: 20,
     start() {
         this.dy = -this.velocity;
         this.dx = game.random(-this.velocity, this.velocity);
@@ -206,14 +208,14 @@ game.ball = {
 
     },
 
-    collide(element) {
+    collide(element) { //
         let x = this.x + this.dx;
         let y = this.y + this.dy;
 
         if (x + this.width > element.x &&
-            x < element.x + element.width &&
-            y + this.heigth > element.y &&
-            y < element.y + element.heigth) {
+            x  < element.x + element.width &&
+            y + this.height > element.y &&
+            y < element.y + element.height) {
             return true;
         }
         return false;
@@ -226,19 +228,19 @@ game.ball = {
         let ballLeft = x;
         let ballRight = ballLeft + this.width;
         let ballTop = y;
-        let ballBottom = ballTop + this.heigth;
+        let ballBottom = ballTop + this.height;
 
         let worldLeft = 0;
         let worldRight = game.width;
         let worldTop = 0;
-        let worldBottom = game.heigth;
+        let worldBottom = game.height;
 
         if (ballLeft < worldLeft) {
             this.x = 0;
             this.dx = this.velocity;
             game.sounds.bump.play();
         } else if (ballRight > worldRight) {
-            this.x = ballRight - this.width;
+            this.x = worldRight - this.width;
             this.dx = -this.velocity;
             game.sounds.bump.play();
         } else if (ballTop < worldTop) {
@@ -272,7 +274,7 @@ game.platform = {
     x: 280,
     y: 300,
     width: 100,
-    heigth: 14,
+    height: 14,
     ball: game.ball,
     fire() {
         if (this.ball) {
