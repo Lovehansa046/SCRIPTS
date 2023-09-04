@@ -1,5 +1,5 @@
 $(function () {
-    $(this).keydowm(function (event) {
+    $(this).keydown(function (event) {
         var key = $(this).find('.key[data-key=' + event.which + ']');
 
         var audio = $(this).find('audio[data-key=' + event.which + ']')[0];
