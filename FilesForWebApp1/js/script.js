@@ -1,8 +1,9 @@
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded', function () {
 
     let tabs = document.querySelectorAll('.tabheader__item'),
-    tabsContent = document.querySelectorAll('.tabcontent'),
-    tavsParent = document.querySelectorAll('.tabheader__items)');
+        tabsContent = document.querySelectorAll('.tabcontent'),
+        tabsParent = document.querySelector('.tabheader__items');
+
     function hideTabContent() {
 
         tabsContent.forEach(item => {
@@ -15,7 +16,7 @@ window.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function showTabContent(i=0) {
+    function showTabContent(i = 0) {
         tabsContent[i].classList.add('show', 'fade');
         tabsContent[i].classList.remove('hide');
         tabs[i].classList.add('tabheader__item_active');
@@ -24,12 +25,12 @@ window.addEventListener('DOMContentLoaded', function() {
     hideTabContent();
     showTabContent();
 
-    tabsParent.addEventListener('click', function(event) {
+    tabsParent.addEventListener('click', function (event) {
         const target = event.target;
 
         if (target && target.classList.contains('tabheader__item')) {
             tabs.forEach((item, i) => {
-                if(target == item) {
+                if (target == item) {
                     hideTabContent();
                     showTabContent(i);
                 }
@@ -42,17 +43,17 @@ window.addEventListener('DOMContentLoaded', function() {
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
-        days = Math.floor((t/(1000*60*60*24))),
-        seconds = Math.floor((t/1000) % 60),
-        minutes = Math.floor((t/1000/60) % 60),
-        hours = Math.floor((t/(1000*60*60) % 24));
+            days = Math.floor((t / (1000 * 60 * 60 * 24))),
+            seconds = Math.floor((t / 1000) % 60),
+            minutes = Math.floor((t / 1000 / 60) % 60),
+            hours = Math.floor((t / (1000 * 60 * 60) % 24));
 
         return {
-            'total':t,
-            'days' : days,
-            'hours' : hours,
-            'minutes' : minutes,
-            'seconds' : seconds
+            'total': t,
+            'days': days,
+            'hours': hours,
+            'minutes': minutes,
+            'seconds': seconds
         };
 
     }
@@ -66,12 +67,12 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     function setClock(selector, endtime) {
-        const timer  = document.querySelector(selector),
-        days = timer.querySelector("#days"),
-        hours = timer.querySelector('#hours'),
-        minutes = timer.querySelector('#minutes'),
-        seconds = timer.querySelector('#seconds'),
-        timeInterval = setInterval(updateClock, 1000);
+        const timer = document.querySelector(selector),
+            days = timer.querySelector("#days"),
+            hours = timer.querySelector('#hours'),
+            minutes = timer.querySelector('#minutes'),
+            seconds = timer.querySelector('#seconds'),
+            timeInterval = setInterval(updateClock, 1000);
 
         updateClock();
 
@@ -90,4 +91,74 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     setClock('.timer', deadline);
- });
+
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+        modal = document.querySelector('modal');
+
+    modalTrigger.forEach(btn => {
+        btn.addEventListener('click', openModal);
+    });
+
+    function closeModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+    function openModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        document.body.style.overflow = 'hidden';
+        clearInterval(modalTimerId);
+    }
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.getAttribute('data-close') == "") {
+            closeModal();
+        }
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.code === "Escape" || modal.classList.contains('show')) {
+            closeModal();
+        }
+    });
+
+    const modalTimerId = this.setTimeout(openModal, 300000);
+
+    function showModalByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+            openModal();
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+
+        window.addEventListener('scroll', showModalByScroll);
+
+        class MenuCard {
+            constructor(src, alt, title, descr, price, parentSelector, ...classes) {
+                this.src = src;
+                this.alt = alt;
+                this.title = title;
+                this.descr = descr;
+                this.price = price;
+                this.classes = classes;
+                this.parent = document.querySelector(parentSelector);
+                this.transfer = 1;
+                this.changeToUSD();
+            }
+
+            changeToUSD() {
+                this.price = this.price * this.transfer;
+            }
+
+            render() {
+                const element = document.createElement('div');
+
+                if (this.classes.length === 0) {
+                    this.classes = "menu__item";
+                    element.classList
+                }
+            }
+        }
+    }
+
+});
