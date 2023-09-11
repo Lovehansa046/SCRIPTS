@@ -36,7 +36,11 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    const deadline = '2021-12-11';
+    const deadline = '2023-09-12';
+
+    var data = new Date();
+
+
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -47,16 +51,18 @@ window.addEventListener('DOMContentLoaded', function () {
 
         return {
             'total': t,
-            'days': days,
-            'hours': hours,
-            'minutes': minutes,
-            'seconds': seconds
+            'days': getZero(days),
+            'hours': getZero(hours),
+            'minutes': getZero(minutes),
+            'seconds': getZero(seconds)
         };
     }
 
     function getZero(num) {
         if (num >= 0 && num < 10) {
             return '0' + num;
+        } else if (num < 0) {
+            return '0';
         } else {
             return num;
         }
@@ -117,7 +123,9 @@ window.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', (e) => {
         if (e.code === "Escape" && modal.classList.contains('show')) {
             closeModal();
-        }
+        } else (e.code === "Z" && modal.classList.contains('show'))
+        closeModal();
+
     });
 
     const modalTimerId = setTimeout(openModal, 300000);
@@ -168,6 +176,8 @@ window.addEventListener('DOMContentLoaded', function () {
                             <div class="menu＿item-total"><span>${this.price}</span> EUR/день</div>
                         </div>
                         `;
+
+                        element.style.marginLeft = '50px';
             this.parent.append(element);
         }
     }
@@ -199,6 +209,16 @@ window.addEventListener('DOMContentLoaded', function () {
         'В меню "Премиум" мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд.' +
         'Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
         21,
+        ".menu .container"
+    ).render();
+
+    new MenuCard(
+        "img/tabs/elite.jpg",
+        "elite",
+        'Меню "Премиум-БОГДАН"',
+        'В меню "Премиум-БОГДАН" мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд.' +
+        'Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+        100,
         ".menu .container"
     ).render();
 
